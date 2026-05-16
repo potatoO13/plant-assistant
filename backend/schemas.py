@@ -6,11 +6,12 @@ from pydantic import BaseModel, Field
 
 class SensorDataOut(BaseModel):
     device_id: str
-    temperature: float
-    air_humidity: float
-    soil_moisture: float
+    temperature: Optional[float] = None
+    air_humidity: Optional[float] = None
+    soil_moisture: Optional[float] = None
     light: float
     timestamp: datetime
+    created_at: datetime
 
     class Config:
         from_attributes = True

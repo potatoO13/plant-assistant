@@ -2,7 +2,9 @@ def generate_advice(sensor_data, plant):
     advices = []
     status = "ok"
 
-    if sensor_data.soil_moisture < plant.soil_moisture_min:
+    if sensor_data.soil_moisture is None:
+        advices.append("暂无土壤湿度数据，暂不生成浇水建议。")
+    elif sensor_data.soil_moisture < plant.soil_moisture_min:
         status = "warning"
         advices.append(f"土壤湿度偏低，当前 {sensor_data.soil_moisture:.1f}%，建议适量浇水。")
     elif sensor_data.soil_moisture > plant.soil_moisture_max:
@@ -11,7 +13,9 @@ def generate_advice(sensor_data, plant):
     else:
         advices.append(f"土壤湿度适宜，当前 {sensor_data.soil_moisture:.1f}%。")
 
-    if sensor_data.temperature < plant.temp_min:
+    if sensor_data.temperature is None:
+        advices.append("暂无温度数据。")
+    elif sensor_data.temperature < plant.temp_min:
         status = "warning"
         advices.append(f"温度偏低，当前 {sensor_data.temperature:.1f}°C，建议移到更温暖的位置。")
     elif sensor_data.temperature > plant.temp_max:

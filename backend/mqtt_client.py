@@ -59,6 +59,7 @@ class MqttService:
 
     def on_message(self, client, userdata, msg):
         payload_text = msg.payload.decode("utf-8", errors="replace")
+        print(f"[mqtt] 收到MQTT数据 topic={msg.topic} payload={payload_text}")
         try:
             payload = json.loads(payload_text)
         except json.JSONDecodeError:
@@ -79,22 +80,33 @@ class MqttService:
         except ValueError:
             return datetime.now()
 
+    @staticmethod
+    def optional_float(value):
+        if value is None or value == "":
+            return None
+        return float(value)
+
     def handle_telemetry(self, payload):
-        required = ["device_id", "temperature", "air_humidity", "soil_moisture", "light"]
-        if any(key not in payload for key in required):
-            print(f"[mqtt] telemetry missing fields: {payload}")
+        device_id = str(payload.get("device_id", ""))
+        if device_id != settings.DEVICE_ID:
+            print(f"[mqtt] telemetry ignored: unexpected device_id={device_id}")
+            return
+
+        if "light" not in payload:
+            print(f"[mqtt] telemetry missing light: {payload}")
             return
 
         db = SessionLocal()
         try:
-            timestamp = self.parse_timestamp(payload.get("timestamp"))
+            timestamp = self.parse_timestamp(payload.get("timestamp") or payload.get("created_at"))
             sensor = SensorData(
-                device_id=str(payload["device_id"]),
-                temperature=float(payload["temperature"]),
-                air_humidity=float(payload["air_humidity"]),
-                soil_moisture=float(payload["soil_moisture"]),
+                device_id=device_id,
+                temperature=self.optional_float(payload.get("temperature")),
+                air_humidity=self.optional_float(payload.get("air_humidity")),
+                soil_moisture=self.optional_float(payload.get("soil_moisture")),
                 light=float(payload["light"]),
                 timestamp=timestamp,
+                created_at=timestamp,
             )
             db.add(sensor)
 
@@ -104,7 +116,7 @@ class MqttService:
                 device.last_seen_at = timestamp
 
             db.commit()
-            print(f"[mqtt] telemetry saved: {payload}")
+            print(f"[mqtt] 写入数据库成功 sensor_data.id={sensor.id} light={sensor.light}")
         except Exception as exc:
             db.rollback()
             print(f"[mqtt] telemetry save failed: {exc}")

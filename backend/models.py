@@ -22,9 +22,9 @@ class SensorData(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     device_id = Column(String(64), index=True, nullable=False)
-    temperature = Column(Float, nullable=False)
-    air_humidity = Column(Float, nullable=False)
-    soil_moisture = Column(Float, nullable=False)
+    temperature = Column(Float, nullable=True)
+    air_humidity = Column(Float, nullable=True)
+    soil_moisture = Column(Float, nullable=True)
     light = Column(Float, nullable=False)
     timestamp = Column(DateTime, index=True, default=datetime.now, nullable=False)
     created_at = Column(DateTime, default=datetime.now, nullable=False)

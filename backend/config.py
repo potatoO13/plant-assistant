@@ -16,7 +16,10 @@ class Settings:
     MQTT_PASSWORD = os.getenv("MQTT_PASSWORD")
     MQTT_KEEPALIVE = int(os.getenv("MQTT_KEEPALIVE", "60"))
 
-    MQTT_TELEMETRY_TOPIC = os.getenv("MQTT_TELEMETRY_TOPIC", f"plant/{DEVICE_ID}/telemetry")
+    MQTT_TELEMETRY_TOPIC = os.getenv(
+        "MQTT_TOPIC_TELEMETRY",
+        os.getenv("MQTT_TELEMETRY_TOPIC", f"plant/{DEVICE_ID}/telemetry"),
+    )
     MQTT_CONTROL_TOPIC = os.getenv("MQTT_CONTROL_TOPIC", f"plant/{DEVICE_ID}/control")
     MQTT_CONTROL_ACK_TOPIC = os.getenv("MQTT_CONTROL_ACK_TOPIC", f"plant/{DEVICE_ID}/control_ack")
 
