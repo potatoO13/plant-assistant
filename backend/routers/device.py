@@ -17,7 +17,7 @@ def latest(db: Session = Depends(get_db)):
     item = (
         db.query(SensorData)
         .filter(SensorData.device_id == settings.DEVICE_ID)
-        .order_by(SensorData.timestamp.desc())
+        .order_by(SensorData.id.desc())
         .first()
     )
     if not item:

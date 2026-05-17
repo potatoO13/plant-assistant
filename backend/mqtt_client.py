@@ -1,4 +1,5 @@
 import json
+import os
 from datetime import datetime
 
 import paho.mqtt.client as mqtt
@@ -11,34 +12,57 @@ from models import Device, SensorData, WateringLog
 class MqttService:
     def __init__(self):
         self.connected = False
-        self.client = self._create_client()
-        if settings.MQTT_USERNAME:
-            self.client.username_pw_set(settings.MQTT_USERNAME, settings.MQTT_PASSWORD)
+        self.client = None
+        self.started = False
 
-        self.client.on_connect = self.on_connect
-        self.client.on_disconnect = self.on_disconnect
-        self.client.on_message = self.on_message
+    def _build_client(self):
+        client = self._create_client()
+        if settings.MQTT_USERNAME:
+            client.username_pw_set(settings.MQTT_USERNAME, settings.MQTT_PASSWORD)
+
+        client.on_connect = self.on_connect
+        client.on_disconnect = self.on_disconnect
+        client.on_message = self.on_message
+        client.reconnect_delay_set(min_delay=1, max_delay=30)
+        return client
 
     @staticmethod
     def _create_client():
+        client_id = f"plant-assistant-backend-{os.getpid()}"
         if hasattr(mqtt, "CallbackAPIVersion"):
-            return mqtt.Client(mqtt.CallbackAPIVersion.VERSION1, client_id="plant-assistant-backend")
-        return mqtt.Client(client_id="plant-assistant-backend")
+            return mqtt.Client(mqtt.CallbackAPIVersion.VERSION1, client_id=client_id)
+        return mqtt.Client(client_id=client_id)
 
     def start(self):
+        if self.started:
+            return
+
+        self.client = self._build_client()
         try:
-            self.client.connect(settings.MQTT_HOST, settings.MQTT_PORT, settings.MQTT_KEEPALIVE)
+            self.client.connect_async(settings.MQTT_HOST, settings.MQTT_PORT, settings.MQTT_KEEPALIVE)
             self.client.loop_start()
+            self.started = True
         except Exception as exc:
+            self.client = None
+            self.started = False
             print(f"[mqtt] connect failed: {exc}")
 
     def stop(self):
+        if not self.client:
+            return
+
         self.client.loop_stop()
         self.client.disconnect()
+        self.client = None
+        self.connected = False
+        self.started = False
 
     def publish_control(self, payload):
+        if not self.client:
+            return mqtt.MQTT_ERR_NO_CONN
+
         message = json.dumps(payload, ensure_ascii=False)
-        result = self.client.publish(settings.MQTT_CONTROL_TOPIC, message, qos=1)
+        result = self.client.publish(settings.MQTT_CONTROL_TOPIC, message, qos=1, retain=False)
         return result.rc
 
     def on_connect(self, client, userdata, flags, rc):
@@ -86,6 +110,12 @@ class MqttService:
             return None
         return float(value)
 
+    @staticmethod
+    def required_float(value):
+        if value is None or value == "":
+            return None
+        return float(value)
+
     def handle_telemetry(self, payload):
         device_id = str(payload.get("device_id", ""))
         if device_id != settings.DEVICE_ID:
@@ -98,13 +128,18 @@ class MqttService:
 
         db = SessionLocal()
         try:
+            light = self.required_float(payload.get("light"))
+            if light is None:
+                print(f"[mqtt] telemetry skipped: light is null payload={payload}")
+                return
+
             timestamp = self.parse_timestamp(payload.get("timestamp") or payload.get("created_at"))
             sensor = SensorData(
                 device_id=device_id,
                 temperature=self.optional_float(payload.get("temperature")),
                 air_humidity=self.optional_float(payload.get("air_humidity")),
                 soil_moisture=self.optional_float(payload.get("soil_moisture")),
-                light=float(payload["light"]),
+                light=light,
                 timestamp=timestamp,
                 created_at=timestamp,
             )
@@ -136,8 +171,17 @@ class MqttService:
                 print(f"[mqtt] control_ack request not found: {request_id}")
                 return
 
-            log.status = str(payload.get("status", "ack"))
-            log.ack_at = self.parse_timestamp(payload.get("timestamp"))
+            status = str(payload.get("status", "")).lower()
+            if status in {"success", "done", "ok"}:
+                log.status = "success"
+            elif status == "rejected":
+                log.status = "rejected"
+            elif status == "failed":
+                log.status = "failed"
+            else:
+                log.status = "failed"
+
+            log.ack_at = self.parse_timestamp(payload.get("timestamp") or payload.get("created_at"))
             log.message = json.dumps(payload, ensure_ascii=False)
             db.commit()
             print(f"[mqtt] watering log updated: {request_id} -> {log.status}")

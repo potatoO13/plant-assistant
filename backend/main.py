@@ -9,6 +9,7 @@ from mqtt_client import mqtt_service
 from routers import advice, device, plants, watering
 from schemas import HealthOut
 from seed_data import seed_plants
+from watering_service import start_timeout_worker, stop_timeout_worker
 
 
 app = FastAPI(title=settings.APP_NAME)
@@ -27,10 +28,12 @@ def on_startup():
     init_db()
     seed_plants()
     mqtt_service.start()
+    start_timeout_worker()
 
 
 @app.on_event("shutdown")
 def on_shutdown():
+    stop_timeout_worker()
     mqtt_service.stop()
 
 
