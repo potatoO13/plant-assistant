@@ -52,10 +52,19 @@ class WateringLog(Base):
     request_id = Column(String(64), unique=True, index=True, nullable=False)
     device_id = Column(String(64), index=True, nullable=False)
     duration_sec = Column(Integer, nullable=False)
+    source = Column(String(30), nullable=False, default="manual")
     status = Column(String(20), nullable=False, default="requested")
     requested_at = Column(DateTime, default=datetime.now, nullable=False)
     ack_at = Column(DateTime, nullable=True)
     message = Column(Text, nullable=True)
+
+    @property
+    def created_at(self):
+        return self.requested_at
+
+    @property
+    def finished_at(self):
+        return self.ack_at
 
 
 class AdviceLog(Base):

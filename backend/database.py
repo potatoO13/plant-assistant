@@ -32,21 +32,38 @@ def migrate_sqlite_schema():
 
         if "sensor_data_old" in tables:
             rebuild_sensor_data_table(conn, "sensor_data_old", drop_current=True)
+            migrate_watering_log_schema(conn, tables)
             return
 
         if "sensor_data" not in tables:
+            migrate_watering_log_schema(conn, tables)
             return
 
         rows = conn.execute(text("PRAGMA table_info(sensor_data)")).mappings().all()
         if not rows:
+            migrate_watering_log_schema(conn, tables)
             return
 
         notnull = {row["name"]: row["notnull"] for row in rows}
         needs_rebuild = any(notnull.get(name) for name in ("temperature", "air_humidity", "soil_moisture"))
         if not needs_rebuild:
+            migrate_watering_log_schema(conn, tables)
             return
 
         rebuild_sensor_data_table(conn, "sensor_data")
+        migrate_watering_log_schema(conn, tables)
+
+
+def migrate_watering_log_schema(conn, tables):
+    if "watering_log" not in tables:
+        return
+
+    columns = {
+        row["name"]
+        for row in conn.execute(text("PRAGMA table_info(watering_log)")).mappings().all()
+    }
+    if "source" not in columns:
+        conn.execute(text("ALTER TABLE watering_log ADD COLUMN source VARCHAR(30) NOT NULL DEFAULT 'manual'"))
 
 
 def rebuild_sensor_data_table(conn, source_table, drop_current=False):

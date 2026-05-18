@@ -1,7 +1,7 @@
 from datetime import datetime
-from typing import List, Literal, Optional
+from typing import List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class SensorDataOut(BaseModel):
@@ -45,7 +45,8 @@ class AdviceOut(BaseModel):
 
 
 class ManualWateringIn(BaseModel):
-    duration_sec: Literal[3, 5, 10] = 5
+    duration_sec: int = Field(default=5)
+    source: str = "manual"
 
 
 class ManualWateringOut(BaseModel):
@@ -55,15 +56,20 @@ class ManualWateringOut(BaseModel):
     status: str
     topic: str
     created_at: datetime
+    source: str = "manual"
+    message: Optional[str] = None
 
 
 class WateringLogOut(BaseModel):
     request_id: str
     device_id: str
     duration_sec: int
+    source: str = "manual"
     status: str
     requested_at: datetime
+    created_at: datetime
     ack_at: Optional[datetime] = None
+    finished_at: Optional[datetime] = None
     message: Optional[str] = None
 
     class Config:

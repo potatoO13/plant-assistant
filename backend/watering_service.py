@@ -31,7 +31,12 @@ def mark_timed_out(db):
 
 
 def latest_request(db):
-    return db.query(WateringLog).order_by(WateringLog.requested_at.desc()).first()
+    return (
+        db.query(WateringLog)
+        .filter(WateringLog.status.in_(("pending", "success", "timeout")))
+        .order_by(WateringLog.requested_at.desc())
+        .first()
+    )
 
 
 def cooldown_remaining(db):
