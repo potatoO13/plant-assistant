@@ -1,0 +1,40 @@
+<view class="container history-page">
+  <view class="page-title">光照历史数据</view>
+  <view class="page-subtitle">查看今日和本周的光照强度变化，单位 lux。</view>
+
+  <view class="range-switch card">
+    <view class="switch-item {{range === 'day' ? 'active' : ''}}" data-range="day" bindtap="changeRange">今日</view>
+    <view class="switch-item {{range === 'week' ? 'active' : ''}}" data-range="week" bindtap="changeRange">本周</view>
+  </view>
+
+  <view wx:if="{{loading}}" class="notice loading-notice">历史数据加载中...</view>
+  <view wx:if="{{errorText}}" class="notice error-notice">{{errorText}}</view>
+  <view wx:if="{{emptyText && !errorText}}" class="notice empty-notice">{{emptyText}}</view>
+
+  <view class="card chart-card">
+    <view class="row-between chart-header">
+      <view>
+        <view class="card-title">光照强度折线图</view>
+        <view class="chart-subtitle">{{rangeText}}数据</view>
+      </view>
+      <view class="tag">{{rangeText}}</view>
+    </view>
+    <view class="chart-wrap">
+      <ec-canvas id="historyChart" canvas-id="historyChart"></ec-canvas>
+    </view>
+  </view>
+
+  <view class="card summary-card">
+    <view class="card-title">数据摘要</view>
+    <view class="summary-grid">
+      <view class="summary-item">
+        <view class="summary-value">{{items.length}}</view>
+        <view class="summary-label">记录数</view>
+      </view>
+      <view class="summary-item">
+        <view class="summary-value">{{avgLight}}</view>
+        <view class="summary-label">平均光照 lux</view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,38 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/history/history",
+    "pages/control/control"
+  ],
+  "window": {
+    "navigationBarTitleText": "种田记",
+    "navigationBarBackgroundColor": "#2FA66A",
+    "navigationBarTextStyle": "white",
+    "backgroundTextStyle": "light",
+    "backgroundColor": "#F5FAF6"
+  },
+  "tabBar": {
+    "color": "#7A8B7D",
+    "selectedColor": "#2FA66A",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/history/history",
+        "text": "历史"
+      },
+      {
+        "pagePath": "pages/control/control",
+        "text": "控制"
+      }
+    ]
+  },
+  "style": "v2",
+  "renderer": "webview",
+  "componentFramework": "glass-easel",
+  "lazyCodeLoading": "requiredComponents"
+}

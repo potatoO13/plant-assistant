@@ -1,0 +1,53 @@
+<view class="container dashboard-page">
+  <view class="page-title">种田记</view>
+  <view class="page-subtitle">ESP32 种植助手实时监测</view>
+
+  <view class="card overview-card">
+    <view class="row-between">
+      <view>
+        <view class="overview-label">设备编号</view>
+        <view class="device-id">{{deviceIdText}}</view>
+      </view>
+      <view class="tag {{statusClass}}">{{statusText}}</view>
+    </view>
+    <view class="update-line">最近更新时间：{{latestTimeText}}</view>
+  </view>
+
+  <view wx:if="{{loading}}" class="notice loading-notice">数据加载中...</view>
+  <view wx:if="{{errorText}}" class="notice error-notice">{{errorText}}</view>
+  <view wx:if="{{!loading && !hasData && !errorText}}" class="notice empty-notice">暂无最新数据</view>
+
+  <view class="light-card">
+    <view class="light-label">当前光照强度</view>
+    <view class="light-value">{{lightText}}<text class="light-unit">lux</text></view>
+    <view class="light-hint">BH1750 实时上报数据</view>
+  </view>
+
+  <view class="metric-grid">
+    <view class="metric-card">
+      <view class="metric-label">温度</view>
+      <view class="metric-value">{{temperatureText}}<text class="metric-unit">℃</text></view>
+    </view>
+    <view class="metric-card">
+      <view class="metric-label">空气湿度</view>
+      <view class="metric-value">{{airHumidityText}}<text class="metric-unit">%</text></view>
+    </view>
+    <view class="metric-card">
+      <view class="metric-label">土壤湿度</view>
+      <view class="metric-value">{{soilMoistureText}}<text class="metric-unit">%</text></view>
+    </view>
+    <view class="metric-card">
+      <view class="metric-label">采集时间</view>
+      <view class="metric-time">{{latestTimeText}}</view>
+    </view>
+  </view>
+
+  <button class="btn-primary refresh-btn" loading="{{loading}}" disabled="{{loading}}" bindtap="refreshData">
+    {{loading ? '刷新中...' : '刷新数据'}}
+  </button>
+
+  <view class="quick-actions">
+    <button class="quick-button" bindtap="goHistory">历史数据</button>
+    <button class="quick-button" bindtap="goControl">浇水控制</button>
+  </view>
+</view>

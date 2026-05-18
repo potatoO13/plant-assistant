@@ -5,6 +5,7 @@
 ## 目录
 
 - `backend/`：FastAPI 后端、SQLite 数据库、MQTT 客户端、规则建议模块
+- `miniprogram/`：微信小程序前端，包含首页 Dashboard、历史光照折线图和模拟浇水控制页
 - `scripts/`：ESP32 模拟器和 MQTT 测试脚本
 - `firmware/`：ESP32 固件占位框架
 - `data/`：植物种子数据
@@ -59,10 +60,26 @@ curl -X POST http://127.0.0.1:8000/api/watering/manual -H "Content-Type: applica
 
 ## 微信小程序对接建议
 
-域名备案完成前，可以先使用本地局域网 IP 或内网穿透调试小程序请求。MVP 页面建议先做：
+小程序代码位于 `miniprogram/`。后端地址集中配置在：
 
-- 首页：展示最新温度、空气湿度、土壤湿度、光照
-- 趋势页：调用 `/api/device/history?range=day`
-- 植物页：调用 `/api/plants/search` 和 `/api/plants/{plant_id}`
-- 建议页：调用 `/api/advice/current`
-- 浇水按钮：调用 `/api/watering/manual`
+```text
+miniprogram/config/api.js
+```
+
+当前正式联调地址：
+
+```text
+https://api.zhongtianji.com.cn
+```
+
+微信小程序后台 request 合法域名也需要配置为：
+
+```text
+https://api.zhongtianji.com.cn
+```
+
+当前小程序已实现：
+
+- 首页 Dashboard：调用 `/api/device/latest` 展示设备最新数据
+- 历史页：调用 `/api/device/history?range=day|week` 绘制光照历史折线图
+- 控制页：调用 `/api/watering/manual` 和 `/api/watering/logs` 完成模拟浇水闭环联调

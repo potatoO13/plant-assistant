@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "历史数据",
+  "usingComponents": {
+    "ec-canvas": "../../components/ec-canvas/ec-canvas"
+  }
+}

@@ -1,0 +1,50 @@
+<view class="container plants-page">
+  <view class="page-title">植物百科</view>
+  <view class="page-subtitle">搜索植物名称，查看适宜温度、土壤湿度、光照需求、浇水建议和养护建议。</view>
+
+  <view class="search-card card">
+    <input class="search-input" placeholder="输入植物名称，如绿萝、多肉、薄荷" value="{{keyword}}" bindinput="onKeywordInput" confirm-type="search" bindconfirm="search" />
+    <button class="search-btn" bindtap="search">搜索</button>
+  </view>
+
+  <view wx:if="{{plantList.length}}" class="result-list">
+    <view wx:for="{{plantList}}" wx:key="id" class="plant-item card {{selectedPlant.id === item.id ? 'active' : ''}}" data-id="{{item.id}}" bindtap="selectPlant">
+      <view class="plant-name">{{item.name}}</view>
+      <view class="plant-alias">{{item.alias}}</view>
+    </view>
+  </view>
+  <view wx:else class="card empty-text">暂无搜索结果</view>
+
+  <view wx:if="{{selectedPlant.name}}" class="card detail-card">
+    <view class="row-between">
+      <view class="card-title">{{selectedPlant.name}}详情</view>
+      <view class="tag">MVP百科</view>
+    </view>
+    <view class="detail-grid">
+      <view class="detail-item">
+        <view class="detail-label">适宜温度</view>
+        <view class="detail-value">{{selectedPlant.temp_min}}-{{selectedPlant.temp_max}}℃</view>
+      </view>
+      <view class="detail-item">
+        <view class="detail-label">土壤湿度</view>
+        <view class="detail-value">{{selectedPlant.soil_min}}-{{selectedPlant.soil_max}}%</view>
+      </view>
+      <view class="detail-item full">
+        <view class="detail-label">光照需求</view>
+        <view class="detail-value">{{selectedPlant.light_desc || selectedPlant.light_min + '-' + selectedPlant.light_max + 'lux'}}</view>
+      </view>
+    </view>
+    <view class="info-block">
+      <view class="info-title">浇水建议</view>
+      <view class="info-text">{{selectedPlant.watering_advice}}</view>
+    </view>
+    <view class="info-block">
+      <view class="info-title">养护建议</view>
+      <view class="info-text">{{selectedPlant.care_tips}}</view>
+    </view>
+    <view class="info-block" wx:if="{{selectedPlant.common_problems}}">
+      <view class="info-title">常见异常</view>
+      <view class="info-text">{{selectedPlant.common_problems}}</view>
+    </view>
+  </view>
+</view>

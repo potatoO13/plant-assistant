@@ -1,0 +1,76 @@
+<view class="container control-page">
+  <view class="page-title">浇水控制</view>
+  <view class="page-subtitle">当前阶段只做模拟浇水闭环，不接真实水泵。</view>
+
+  <view class="card device-card">
+    <view class="row-between">
+      <view class="card-title">设备状态</view>
+      <view class="tag {{deviceStatusClass}}">{{deviceStatusText}}</view>
+    </view>
+    <view class="device-grid">
+      <view>
+        <view class="field-label">设备编号</view>
+        <view class="field-value">{{deviceIdText}}</view>
+      </view>
+      <view>
+        <view class="field-label">当前光照</view>
+        <view class="field-value">{{deviceLightText}}</view>
+      </view>
+    </view>
+    <view class="device-time">最近数据更新时间：{{deviceTimeText}}</view>
+    <view wx:if="{{deviceErrorText}}" class="inline-error">{{deviceErrorText}}</view>
+  </view>
+
+  <view class="card duration-card">
+    <view class="card-title">选择浇水时长</view>
+    <view class="duration-list">
+      <view wx:for="{{durations}}" wx:key="value" class="duration-item {{durationSec === item.value ? 'active' : ''}} {{isSubmitting || isPolling ? 'disabled' : ''}}" data-value="{{item.value}}" bindtap="selectDuration">
+        <view class="duration-value">{{item.value}}秒</view>
+        <view class="duration-label">{{item.label}}</view>
+      </view>
+    </view>
+    <button class="btn-primary water-btn" loading="{{isSubmitting}}" disabled="{{isSubmitting || isPolling}}" bindtap="manualWatering">{{buttonText}}</button>
+    <view class="safe-tip">请求会发送到后端，由后端通过 MQTT 通知 ESP32 模拟执行；小程序不会直连 MQTT。</view>
+  </view>
+
+  <view class="card status-card">
+    <view class="row-between">
+      <view class="card-title">当前指令</view>
+      <view class="tag {{currentStatusClass}}">{{currentStatus}}</view>
+    </view>
+    <view class="result-line">状态：{{currentStatusText}}</view>
+    <view class="result-line">request_id：{{currentRequestId || '--'}}</view>
+    <view class="result-line">说明：{{currentMessage || '--'}}</view>
+    <view wx:if="{{errorText}}" class="inline-error">{{errorText}}</view>
+  </view>
+
+  <view class="card logs-card">
+    <view class="row-between">
+      <view class="card-title">最近浇水记录</view>
+      <button class="mini-refresh" loading="{{logsLoading}}" bindtap="refreshLogs">刷新</button>
+    </view>
+    <view wx:if="{{logs.length}}">
+      <view wx:for="{{logs}}" wx:key="request_id" class="log-item">
+        <view class="log-head">
+          <view class="log-request">request_id：{{item.request_id}}</view>
+          <view class="tag {{item.statusClass}}">{{item.status}}</view>
+        </view>
+        <view class="log-grid">
+          <view>时长：{{item.duration_sec}}秒</view>
+          <view>来源：{{item.source}}</view>
+          <view>创建：{{item.created_at}}</view>
+          <view>完成：{{item.finished_at}}</view>
+        </view>
+        <view class="log-message">说明：{{item.message}}</view>
+        <view class="log-status-text">{{item.statusText}}</view>
+      </view>
+    </view>
+    <view wx:else class="empty-text">{{logsEmptyText}}</view>
+  </view>
+
+  <view class="card dev-card">
+    <view class="card-title">开发测试</view>
+    <button class="dev-button" disabled="{{isSubmitting || isPolling}}" bindtap="devSend15Sec">开发测试：发送15秒请求</button>
+    <view class="safe-tip">用于验证后端或 ESP32 拒绝、失败、超时等异常路径，不代表正式浇水档位。</view>
+  </view>
+</view>

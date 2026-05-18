@@ -1,0 +1,171 @@
+.device-card .card-title,
+.status-card .card-title,
+.logs-card .card-title,
+.dev-card .card-title {
+  margin-bottom: 0;
+}
+
+.device-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18rpx;
+  margin-top: 24rpx;
+}
+
+.field-label {
+  color: #7A8B7D;
+  font-size: 24rpx;
+}
+
+.field-value {
+  margin-top: 10rpx;
+  color: #203F2C;
+  font-size: 30rpx;
+  font-weight: 800;
+  word-break: break-all;
+}
+
+.device-time {
+  margin-top: 20rpx;
+  color: #6B8171;
+  font-size: 24rpx;
+  line-height: 1.5;
+}
+
+.duration-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16rpx;
+  margin-bottom: 26rpx;
+}
+
+.duration-item {
+  padding: 26rpx 12rpx;
+  border-radius: 22rpx;
+  background: #F5FAF6;
+  text-align: center;
+  border: 2rpx solid transparent;
+}
+
+.duration-item.active {
+  border-color: #2FA66A;
+  background: #E8F6EE;
+}
+
+.duration-item.disabled {
+  opacity: 0.58;
+}
+
+.duration-value {
+  color: #203F2C;
+  font-size: 32rpx;
+  font-weight: 800;
+}
+
+.duration-label {
+  margin-top: 8rpx;
+  color: #7A8B7D;
+  font-size: 22rpx;
+}
+
+.water-btn {
+  margin-top: 8rpx;
+}
+
+.safe-tip {
+  margin-top: 20rpx;
+  color: #7A8B7D;
+  font-size: 24rpx;
+  line-height: 1.6;
+}
+
+.result-line {
+  margin-top: 16rpx;
+  color: #53685A;
+  font-size: 26rpx;
+  line-height: 1.6;
+  word-break: break-all;
+}
+
+.inline-error {
+  margin-top: 18rpx;
+  padding: 18rpx 20rpx;
+  color: #B13A2E;
+  background: #FFEDEA;
+  border-radius: 18rpx;
+  font-size: 24rpx;
+  line-height: 1.5;
+}
+
+.mini-refresh {
+  background: #EFF8F2;
+  color: #2FA66A;
+  height: 52rpx;
+  line-height: 52rpx;
+  padding: 0 22rpx;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+}
+
+.mini-refresh::after,
+.dev-button::after {
+  border: none;
+}
+
+.log-item {
+  padding: 24rpx 0;
+  border-top: 1rpx solid #ECF2EE;
+}
+
+.log-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.log-request {
+  flex: 1;
+  color: #203F2C;
+  font-size: 26rpx;
+  font-weight: 700;
+  word-break: break-all;
+}
+
+.log-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10rpx 16rpx;
+  margin-top: 16rpx;
+  color: #617566;
+  font-size: 24rpx;
+  line-height: 1.45;
+}
+
+.log-message,
+.log-status-text {
+  margin-top: 12rpx;
+  color: #7A8B7D;
+  font-size: 24rpx;
+  line-height: 1.45;
+  word-break: break-all;
+}
+
+.log-status-text {
+  color: #2F7650;
+}
+
+.dev-card {
+  border: 2rpx dashed #F2A33A;
+  background: #FFFDF6;
+}
+
+.dev-button {
+  height: 72rpx;
+  line-height: 72rpx;
+  border-radius: 999rpx;
+  color: #9A6500;
+  background: #FFF2C9;
+  font-size: 26rpx;
+  font-weight: 700;
+}

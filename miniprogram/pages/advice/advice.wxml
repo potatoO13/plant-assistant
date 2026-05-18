@@ -1,0 +1,28 @@
+<view class="container advice-page">
+  <view class="page-title">种植建议</view>
+  <view class="page-subtitle">根据当前传感器数据和植物百科阈值，展示土壤、光照、温度等异常项。</view>
+
+  <view class="card status-card">
+    <view class="row-between">
+      <view>
+        <view class="status-title">综合状态</view>
+        <view class="status-summary">{{advice.summary || '暂无建议数据'}}</view>
+      </view>
+      <view class="tag {{statusClass}}">{{statusText}}</view>
+    </view>
+  </view>
+
+  <view wx:if="{{advices.length}}">
+    <view wx:for="{{advices}}" wx:key="type" class="card advice-item {{item.severityClass}}">
+      <view class="row-between">
+        <view class="advice-title">{{item.title}}</view>
+        <view class="tag {{item.tagClass}}">{{item.severityText}}</view>
+      </view>
+      <view class="advice-text">{{item.text}}</view>
+      <view wx:if="{{item.suggest_watering}}" class="watering-suggest">建议操作：可前往“控制”页执行3-5秒短时浇水。</view>
+    </view>
+  </view>
+  <view wx:else class="card empty-text">当前没有异常项</view>
+
+  <button class="btn-primary" bindtap="goControl">去一键浇水</button>
+</view>

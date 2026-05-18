@@ -1,0 +1,52 @@
+.status-card {
+  background: linear-gradient(135deg, #E8F6EE, #FFFFFF);
+}
+
+.status-title {
+  font-size: 32rpx;
+  font-weight: 800;
+  color: #203F2C;
+  margin-bottom: 12rpx;
+}
+
+.status-summary {
+  font-size: 26rpx;
+  color: #5F7566;
+  line-height: 1.7;
+  max-width: 480rpx;
+}
+
+.advice-item {
+  border-left: 10rpx solid #2FA66A;
+}
+
+.advice-item.warning {
+  border-left-color: #F2A33A;
+}
+
+.advice-item.danger {
+  border-left-color: #D95757;
+}
+
+.advice-title {
+  font-size: 30rpx;
+  font-weight: 800;
+  color: #203F2C;
+}
+
+.advice-text {
+  margin-top: 18rpx;
+  font-size: 27rpx;
+  line-height: 1.7;
+  color: #53685A;
+}
+
+.watering-suggest {
+  margin-top: 18rpx;
+  padding: 18rpx;
+  border-radius: 18rpx;
+  background: #FFF7E8;
+  color: #9D6B10;
+  font-size: 24rpx;
+  line-height: 1.5;
+}

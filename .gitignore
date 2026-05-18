@@ -41,5 +41,8 @@ Thumbs.db
 .vscode/
 .idea/
 
+# WeChat DevTools local private config
+miniprogram/project.private.config.json
+
 # Notebook caches
 .ipynb_checkpoints/
