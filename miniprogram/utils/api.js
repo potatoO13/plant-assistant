@@ -21,10 +21,25 @@ function getWateringLogs(params = {}) {
   return request.get(API.WATERING_LOGS, params);
 }
 
+function searchPlants(keyword = '') {
+  return request.get(API.PLANTS_SEARCH, { keyword });
+}
+
+function getPlantDetail(id) {
+  return request.get(`${API.PLANT_DETAIL}/${id}`);
+}
+
+function getCurrentAdvice() {
+  return request.get(API.ADVICE_CURRENT);
+}
+
 module.exports = {
   health,
   getLatest,
   getHistory,
   manualWatering,
-  getWateringLogs
+  getWateringLogs,
+  searchPlants,
+  getPlantDetail,
+  getCurrentAdvice
 };

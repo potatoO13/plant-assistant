@@ -1,6 +1,19 @@
 const api = require('../../utils/api');
 const { statusText, statusClass } = require('../../utils/format');
 
+function normalizeAdviceItem(item, index, fallbackStatus) {
+  if (typeof item === 'string') {
+    return {
+      type: `advice_${index}`,
+      severity: fallbackStatus || 'normal',
+      title: item.length > 14 ? item.slice(0, 14) : item,
+      text: item,
+      suggest_watering: item.indexOf('浇水') >= 0 && item.indexOf('暂停浇水') < 0
+    };
+  }
+  return item || {};
+}
+
 Page({
   data: {
     advice: {},
@@ -26,12 +39,16 @@ Page({
       wx.showLoading({ title: '加载中' });
       const advice = await api.getCurrentAdvice();
       const list = advice.advices || [];
-      const advices = list.map((item) => ({
-        ...item,
-        severityText: statusText(item.severity || advice.status),
-        tagClass: statusClass(item.severity || advice.status),
-        severityClass: item.severity === 'danger' ? 'danger' : (item.severity === 'warning' ? 'warning' : '')
-      }));
+      const advices = list.map((item, index) => {
+        const normalized = normalizeAdviceItem(item, index, advice.status);
+        const severity = normalized.severity || advice.status || 'normal';
+        return {
+          ...normalized,
+          severityText: statusText(severity),
+          tagClass: statusClass(severity),
+          severityClass: severity === 'danger' ? 'danger' : (severity === 'warning' ? 'warning' : '')
+        };
+      });
       this.setData({
         advice,
         advices,

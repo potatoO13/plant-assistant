@@ -2,7 +2,9 @@
   "pages": [
     "pages/index/index",
     "pages/history/history",
-    "pages/control/control"
+    "pages/control/control",
+    "pages/plants/plants",
+    "pages/advice/advice"
   ],
   "window": {
     "navigationBarTitleText": "种田记",
@@ -28,6 +30,14 @@
       {
         "pagePath": "pages/control/control",
         "text": "控制"
+      },
+      {
+        "pagePath": "pages/plants/plants",
+        "text": "百科"
+      },
+      {
+        "pagePath": "pages/advice/advice",
+        "text": "建议"
       }
     ]
   },
